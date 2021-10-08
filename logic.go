@@ -19,10 +19,10 @@ func info() BattlesnakeInfoResponse {
 	log.Println("INFO")
 	return BattlesnakeInfoResponse{
 		APIVersion: "1",
-		Author:     "",        // TODO: Your Battlesnake username
-		Color:      "#888888", // TODO: Personalize
-		Head:       "default", // TODO: Personalize
-		Tail:       "default", // TODO: Personalize
+		Author:     "",           // TODO: Your Battlesnake username
+		Color:      "#0044b3",    // TODO: Personalize
+		Head:       "all-seeing", // TODO: Personalize
+		Tail:       "tiger-tail", // TODO: Personalize
 	}
 }
 
@@ -65,8 +65,21 @@ func move(state GameState) BattlesnakeMoveResponse {
 
 	// TODO: Step 1 - Don't hit walls.
 	// Use information in GameState to prevent your Battlesnake from moving beyond the boundaries of the board.
-	// boardWidth := state.Board.Width
-	// boardHeight := state.Board.Height
+	boardWidth := state.Board.Width
+	boardHeight := state.Board.Height
+
+	switch myHead.X {
+	case 0:
+		possibleMoves["left"] = false
+	case boardWidth:
+		possibleMoves["right"] = false
+	}
+	switch myHead.Y {
+	case 0:
+		possibleMoves["down"] = false
+	case boardHeight:
+		possibleMoves["up"] = false
+	}
 
 	// TODO: Step 2 - Don't hit yourself.
 	// Use information in GameState to prevent your Battlesnake from colliding with itself.
