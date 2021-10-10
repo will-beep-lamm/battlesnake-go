@@ -21,8 +21,8 @@ func info() BattlesnakeInfoResponse {
 		APIVersion: "1",
 		Author:     "",           // TODO: Your Battlesnake username
 		Color:      "#0044b3",    // TODO: Personalize
-		Head:       "all-seeing", // TODO: Personalize
-		Tail:       "tiger-tail", // TODO: Personalize
+		Head:       "caffeine", // TODO: Personalize
+		Tail:       "freckled", // TODO: Personalize
 	}
 }
 
@@ -71,29 +71,71 @@ func move(state GameState) BattlesnakeMoveResponse {
 	switch myHead.X {
 	case 0:
 		possibleMoves["left"] = false
-	case boardWidth:
+    log.Printf("!Left wall")
+	case boardWidth-1:
 		possibleMoves["right"] = false
+    log.Printf("!Right wall")
 	}
 	switch myHead.Y {
 	case 0:
 		possibleMoves["down"] = false
-	case boardHeight:
+    log.Printf("!Down wall")
+	case boardHeight-1:
 		possibleMoves["up"] = false
+    log.Printf("!Up wall")
 	}
 
 	// TODO: Step 2 - Don't hit yourself.
 	// Use information in GameState to prevent your Battlesnake from colliding with itself.
-	// mybody := state.You.Body
+	mybody := state.You.Body
+  log.Printf("Body: %v", mybody)
+  for i:=2; i < len(mybody);i++{
+    // if mybody[i].Y > 
+    switch mybody[i].X {
+    case myHead.X-1:
+     if mybody[i].Y == myHead.Y  {
+      possibleMoves["left"] = false
+      log.Printf("!Left Body")
+     }
+    case myHead.X+1:
+      if mybody[i].Y == myHead.Y  {
+      possibleMoves["right"] = false
+      log.Printf("!Right Body")
+     }
+      
+    default:
+    }
+    switch mybody[i].Y {
+    case myHead.Y-1:
+    if mybody[i].X == myHead.X  {
+      possibleMoves["down"] = false
+      log.Printf("!Down Body")
+    }
+    case myHead.Y+1:
+    if mybody[i].X == myHead.X  {
+      possibleMoves["up"] = false
+      log.Printf("!Up Body")
+    }
+    default:
+    }
+    
+  }
+
 
 	// TODO: Step 3 - Don't collide with others.
 	// Use information in GameState to prevent your Battlesnake from colliding with others.
-
+  len:=state.Board.Snakes
+  log.Printf("snakes: %v\n", len)
+  log.Printf("hazards: %v\n", state.Board.Hazards)
 	// TODO: Step 4 - Find food.
 	// Use information in GameState to seek out and find food.
 
 	// Finally, choose a move from the available safe moves.
 	// TODO: Step 5 - Select a move to make based on strategy, rather than random.
-	var nextMove string
+	
+  log.Printf("Head Coord X,Y: %v,%v\n", myHead.X, myHead.Y)
+  log.Printf("Neck Coord X,Y: %v,%v\n", myNeck.X, myNeck.Y)
+  var nextMove string
 
 	safeMoves := []string{}
 	for move, isSafe := range possibleMoves {
@@ -101,7 +143,7 @@ func move(state GameState) BattlesnakeMoveResponse {
 			safeMoves = append(safeMoves, move)
 		}
 	}
-
+  log.Print(safeMoves)
 	if len(safeMoves) == 0 {
 		nextMove = "down"
 		log.Printf("%s MOVE %d: No safe moves detected! Moving %s\n", state.Game.ID, state.Turn, nextMove)
